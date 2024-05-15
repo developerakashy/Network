@@ -1,0 +1,47 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2>Post view</h2>
+{{ Post.id }}<br>
+{{ Post.user }}<br>
+{{ Post.content }}<br>
+<form action="{% url 'postview' Post.id %}" method="post">
+    {% csrf_token %}
+    <input type="text" name="content" placeholder="comment on the post">
+    <input type="submit">
+</form>
+<h2>Comment:</h2>
+{% for comment in commentOnPost %}
+       
+       {{comment.user}}<br>
+       {{comment.content}}
+       <p>------------------------</p>
+    {% endfor %}
+
+
+
+{% endblock %}
+
+<script src="{% static 'network/postview.js' %}"></script>

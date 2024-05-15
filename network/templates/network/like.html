@@ -1,0 +1,25 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% block body %}
+
+{% for post in Post %}
+{% if post.edited %}
+    Edited<br>
+{% endif%}
+
+{{ post.id }}<br>
+{{ post.user }}<br>
+{{ post.content }}<br>
+{{ post.created }}<br>
+
+<a href="{% url 'edit' post.id %}">
+    Edit
+</a>
+
+<a href="{% url 'like' post.id %}">
+    Like 
+</a>
+<p>------------------------</p>
+{% endfor %}
+
+{% endblock %}

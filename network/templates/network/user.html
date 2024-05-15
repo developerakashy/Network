@@ -1,0 +1,36 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% block body %}
+
+<h3>User info</h3>
+{{userInfo}}<br>
+{{userInfo.email}}
+
+<h3>User Post</h3>
+{% for post in userPost %}
+    {{ post.id }}<br>
+    {{ post.user }}<br>
+    {{ post.content }}<br>
+    {{ post.created }}<br>
+    <p>------------------</p>
+{% endfor%}
+
+<h3>User followers</h3>
+{% for user in followers %}
+    {{ user.id }}<br>
+    {{ user.follower }}<br>
+    {{ user.email }}<br>
+    <p>------------------</p>
+{% endfor%}
+
+<h3>User followed</h3>
+{% for user in following %}
+    {{ user.id }}<br>
+    {{ user }}<br>
+    {{ user.email }}<br>
+    <p>------------------</p>
+{% endfor%}
+
+<h3>User LikedPost</h3>
+
+{% endblock %}

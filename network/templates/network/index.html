@@ -1,0 +1,193 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% block body %}
+
+<section class="content">
+    <section id="post-nav">
+        <div class="slider"></div>
+        <nav id="post-nav1"><button>All Posts</button></nav>
+        <nav id="post-nav2"><button>Following</button></nav>
+    </section>
+    
+    {% if user.is_authenticated %}
+    <section id="create-post">
+            <form id="create-posts" action="#" method="POST">
+                {% csrf_token %}
+                <div>
+                    <section class="user-image"></section>
+                    <textarea id="post-textarea" placeholder="What's happening....?" required></textarea>
+                </div>
+                <div class="post-btn">
+                    <button >Post</button>
+                </div>
+            </form>
+    </section>
+    {% endif %}
+
+    
+    <section class="loader">
+        <img src="{% static 'network/assets/loading.svg' %}" alt="loader">
+    </section>
+    
+
+    <section id="post-view-all"> 
+          
+    </section>
+
+    <section id="post-view-following"> 
+          
+    </section>
+</section>
+
+<!-- <section class="content content-post-comment">
+
+    <section class="post-heading">
+        <button>←</button>
+        <p>Post</p>
+    </section>
+    <section class="post-to-be-commented">
+        <section class="post-visible-comment">
+
+            <div>
+                <section class="post-user">
+                    
+                    <section class="user-image"></section>
+                    <section>
+                        <p class="username">Akash Yadav  • <span class="user-name">6hours ago</span>
+                        </p>
+                        <p class="user-name">akashy7977</p>
+                    </section>
+                </section>
+                <section class="follow">
+                    <button class="follow-btn">Follow</button>
+                </section>
+            </div>
+
+            <div>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                 Autem deleniti quae odit temporibus inventore 
+                 quasi sit ipsam, doloribus dignissimos iusto hic qui,
+                 voluptatum, eum ullam at praesentium delectus. Quod, quo.
+                </div>
+
+            <div>
+                <p class="user-name">12:12:45  • <span> 24 April,2024</span>
+                </p>
+            </div>
+
+            <div>
+                <button>♥️ 20 Likes</button><button>💭 2 comments</button>
+            </div>
+
+        </section>
+    </section>
+
+    <section class="comment-textarea">
+        <form action="">
+            <section class="user-image"></section>
+            <textarea id="comment-text-content" type="text" placeholder="Post your reply"></textarea>
+            <button>Reply</button>
+        </form>
+    </section>
+
+
+<section class="comment-view">
+        <section class="post-visible">
+
+            <div>
+                <section class="post-user">
+                    
+                    <section class="user-image"></section>
+                    <section>
+                        <p class="username">Akash Yadav  • <span class="user-name">6hours ago</span>
+                        </p>
+                        <p class="user-name">akashy7977</p>
+                    </section>
+                </section>
+                
+            </div>
+
+            <div>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                 Autem deleniti quae odit temporibus inventore 
+                 quasi sit ipsam, doloribus dignissimos iusto hic qui,
+                 voluptatum, eum ullam at praesentium delectus. Quod, quo.
+                </div>
+
+            <div>
+                
+                <p><img src="" alt="">♥️ 6 Likes</p>
+            </div>
+
+        </section>
+
+        <section class="post-visible">
+
+            <div>
+                <section class="post-user">
+                    
+                    <section class="user-image"></section>
+                    <section>
+                        <p class="username">Akash Yadav  • <span class="user-name">6hours ago</span>
+                        </p>
+                        <p class="user-name">akashy7977</p>
+                    </section>
+                </section>
+                
+            </div>
+
+            <div>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                 Autem deleniti quae odit temporibus inventore 
+                 quasi sit ipsam, doloribus dignissimos iusto hic qui,
+                 voluptatum, eum ullam at praesentium delectus. Quod, quo.
+                </div>
+
+            <div>
+                
+                <p><img src="" alt="">♥️ 6 Likes</p>
+            </div>
+
+        </section>
+    </section>
+
+</section> -->
+
+<script src="{% static 'network/index.js' %}"></script>
+
+
+
+
+    <!-- <form action="{% url 'post' %}" method="POST">
+        {% csrf_token %}
+        <input type="text" name="content">
+        <button>submit</button>
+    </form>
+    {{error}}
+
+    
+    {% for post in Post %}
+    <a href="{% url 'postview' post.id %}">Visit Post</a>
+        {% if post.edited %}
+            <br>Edited<br>
+        {% endif%}
+
+        <a href="{% url 'follow' post.id %}">
+            Follow {{ post.followed }}
+            
+        </a>
+        
+        {{ post.id }}<br>
+        <a href="{% url 'userInfo' post.user.id %}">Visit User</a><br>
+        {{ post.user }}<br>
+        {{ post.content }}<br>
+        {{ post.created }}<br>
+        
+        <a href="{% url 'edit' post.id %}">
+            Edit
+        </a>
+
+        <a href="{% url 'like' post.id %}">
+            Like {{ post.liked }}
+            {{ post.like_count }}
+        </a>
+        <p>------------------------</p>
+    {% endfor %} -->
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'network/layout.html' %}
+{% load static %}
+{% block body %}
+
+<form action="{% url 'edit' post.id %}" method="POST">
+    {% csrf_token %}
+    {{post.user}}<br>
+    <input type="text" value="{{post.content}}" name="content">
+    <input type="submit" value="submit">
+</form>
+{% endblock %}
