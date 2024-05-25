@@ -33,7 +33,7 @@ button{
 
 @font-face {
     font-family: plus;
-    src: url(assets/Roboto-Regular.ttf)
+    src: url(assets/PlusJakartaSans.ttf)
 }
 
 body{
@@ -177,22 +177,26 @@ body{
 }
 
 .username{
+    font-family: plus;
     margin: 0px;
-    font-size: 15px;
+    font-size: 0.95rem;
     font-weight: 700;
     letter-spacing: 0.5px;
     text-transform: capitalize;
 }
 
 .username span:nth-child(1):hover{
-    border-bottom:2px solid white;
+    text-decoration-line: underline;
+    text-decoration-thickness: 0.1rem;
+    /* border-bottom:2px solid white;/ */
 }
 
 .user-name{
     color: rgb(113, 118, 123);
-    font-size: 14px;
+    font-size: 0.85rem;
     /* font-weight: lighter; */
-    font-weight: 600;
+    letter-spacing: 0.5px;
+    font-weight: 500;
     margin: 1px;
     text-transform: lowercase;
 }
@@ -458,11 +462,11 @@ button{
 
 .post-visible> div:nth-child(2){
     /* border: 1px solid; */
-    font-size: 16px;
+    font-size: 1rem;
     font-family:plus;
     white-space: pre-wrap;
     line-height: 24px;
-    /* letter-spacing: 0.75px; */
+    letter-spacing: 0.5px;
     color: rgb(231, 233, 234);
     padding: 0rem 1.5rem 0rem 0rem;
     margin-left: 3.5rem;
@@ -471,7 +475,7 @@ button{
 
 .post-visible> div:nth-child(3){
     display: flex;
-    margin-left: 3.2rem;
+    margin-left: 3.4rem;
 }
 
 .post-visible> div:nth-child(3)>*{
@@ -528,13 +532,13 @@ svg{
 
 .like-btn:hover svg{
     transition:.2s ease-in-out;
-    background-color: rgba(252, 86, 122, 0.295);
+    background-color: rgba(252, 86, 122, 0.195);
 }
 
 .like-btn:hover .svg-not-liked > path:nth-child(2){
     transition:stroke .2s ease-in-out;
     stroke: rgb(252, 86, 122);
-    fill: rgba(252, 86, 122, 0.2);
+    fill: black;
 }
 
 

@@ -409,7 +409,16 @@ function likeThePost(element){
         fetch(`/like/${id}`)
         .then(response => response.json())
         .then(post => {
-                
+                if(post.liked){
+                    element.classList.add("liked")
+                    element.classList.remove("not-liked")
+                }
+                else{
+                    element.classList.add("not-liked")
+                    element.classList.remove("liked")
+                }
+
+                // element.classList.add(`${post.liked ? "liked" : "not-liked"}`)
                 element.innerHTML = `${post.liked?`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
                 <path fill="none" d="M0 0h24v24H0z"/>
                 <path d="M12 21.35l-.874-.835C5.798 16.182 2 12.015 2 8.5 2 5.42 4.42 3 7.5 3 9.642 3 11.486 4.592 12 6.25 12.514 4.591 14.358 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.515-3.798 7.682-8.126 12.015L12 21.35z" fill="rgb(249, 24, 128)"/>
