@@ -1,3 +1,5 @@
+let lastClickedButton = null
+
 document.addEventListener("DOMContentLoaded",()=>{  
     let createPost = document.querySelector("#create-posts")
     let content = document.querySelector("#post-textarea")
@@ -5,18 +7,11 @@ document.addEventListener("DOMContentLoaded",()=>{
     let followingPosts = document.querySelector("#post-nav2")
     let slider = document.querySelector(".slider")
     let text = document.querySelector("#post-textarea")
-    let post_comment = document.querySelector("#post-comment-view")
-    let postViewAll  = document.querySelector("#post-view-all")
-    let postViewFollowing  = document.querySelector("#post-view-following")
-    let loader  = document.querySelector(".loader")
-    let lastClickedButton;
-    
-
     let isLoading = false
     let isLoadingFollowing = false
+
     lastClickedButton = "posts"
 
-    post_comment.style.display = "none"
 
     posts.addEventListener("click",()=>{
         lastClickedButton = "posts"
@@ -39,7 +34,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     globalThis.scrollTo({top:0,behavior:"smooth"})
     followingPosts.firstChild.style.color = "rgb(113, 118, 123)"
     showPosts()
-   
+    userRecommended()
 
     createPost.onsubmit = ()=>{
         addPost(content)
@@ -76,10 +71,12 @@ function postInteraction(){
                 follow(event.target)
 
             }
-            else{       
-                post_comment.style.display = 'block'
-                postViewAll.parentElement.style.display = "none"
-                postViewFollowing.style.display = "none"                
+            else{
+                console.log("comment directed")
+                // let content = document.querySelector(".content")
+                // let postComment = document.querySelector(".content-post-comment")
+                // content.style.display = "none"
+                
             }
 
             
@@ -101,11 +98,13 @@ function postFollowing(){
         return
     }
 
-    
+    let postViewAlt  = document.querySelector("#post-view-all")
+    let postView  = document.querySelector("#post-view-following")
+    let loader  = document.querySelector(".loader")
     loader.style.display = "block"
-    postViewFollowing.innerHTML = ""
-    postViewFollowing.style.display = "none"
-    postViewAll.style.display = "none"
+    postView.innerHTML = ""
+    postView.style.display = "none"
+    postViewAlt.style.display = "none"
 
     isLoadingFollowing = true
 
@@ -115,7 +114,7 @@ function postFollowing(){
 
     post.reverse()
     post.forEach(element => {
-        postViewFollowing.innerHTML += `
+        postView.innerHTML += `
             <section class="post-visible ${element.id}">
             
             <div>
@@ -157,18 +156,15 @@ function postFollowing(){
     
     });
 
-    setTimeout(()=>{
 
-        
-        isLoadingFollowing = false
-        if(lastClickedButton === "followingPosts"){
-            postViewAll.style.display = "none"
-            postViewFollowing.style.display = "block"
-            loader.style.display = "none"
-            // follow()
-            postInteraction()
-        }
-    },500)
+    isLoadingFollowing = false
+    if(lastClickedButton === "followingPosts"){
+        postViewAlt.style.display = "none"
+        postView.style.display = "block"
+        loader.style.display = "none"
+        // follow()
+        postInteraction()
+    }
 
     })
     .catch(error => {
@@ -260,13 +256,13 @@ function showPosts(){
         return
     }
 
-    // let postViewAlt  = document.querySelector("#post-view-following")
-    // let postView  = document.querySelector("#post-view-all")
-    // let loader  = document.querySelector(".loader")
+    let postViewAlt  = document.querySelector("#post-view-following")
+    let postView  = document.querySelector("#post-view-all")
+    let loader  = document.querySelector(".loader")
     loader.style.display = "block"
-    postViewAll.innerHTML = ""
-    postViewFollowing.style.display = "none"
-    postViewAll.style.display = "none"
+    postView.innerHTML = ""
+    postView.style.display = "none"
+    postViewAlt.style.display = "none"
     
     isLoading = true
 
@@ -276,7 +272,7 @@ function showPosts(){
 
     post.forEach(element => {
         
-        postViewAll.innerHTML += `
+        postView.innerHTML += `
         <section class="post-visible ${element.id}">
 
         <div>
@@ -319,17 +315,13 @@ function showPosts(){
         
         });
         
-        setTimeout(()=>{
-
-            
-            isLoading = false
-            if(lastClickedButton === "posts"){
-                postViewFollowing.style.display = "none"
-                postViewAll.style.display = "block"
-                loader.style.display = "none"
-                postInteraction()
-            }
-        },500)
+        isLoading = false
+        if(lastClickedButton === "posts"){
+            postViewAlt.style.display = "none"
+            postView.style.display = "block"
+            loader.style.display = "none"
+            postInteraction()
+        }
         })
         .catch(error => {
             console.error("Error Occured:",error)
@@ -441,6 +433,40 @@ function likeThePost(element){
                 console.log(error)
             })
         
+}
+
+
+
+function userRecommended(){
+    fetch("/users")
+    .then(response => response.json())
+    .then(data => {
+        let recommended = document.querySelector("#recommended-users")
+        console.log(data)
+        data.forEach(obj => {
+
+            recommended.innerHTML += `<section class="logout">
+            
+            <section class="user">
+            <section class="user-image"></section>
+            <article class="userinfo">
+            <p class="username">${obj.userName}</p>
+            <p class="user-name">${obj.userEmail}</p>
+            </article>
+            </section>
+            
+            <section class="follow">
+            <button class="follow-btn">Follow</button>
+            </section>
+            
+            </section>`
+            
+            
+        })
+    })
+    .catch(error => {
+        console.log(error)
+    })
 }
 
 })
