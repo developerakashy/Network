@@ -19,12 +19,12 @@ def posts(request):
         follower = Following.objects.get(user=request.user)
 
         for post in posts:
-        
+
             if user.post.filter(pk=post.id):
                 post.liked = True
             else:
                 post.liked = False
-            
+
             # post.like_count = post.postLiked.all().count()
             post.save()
 
@@ -36,14 +36,14 @@ def posts(request):
             else:
                 post.followed = "follow"
             post.save()
-        
+
     except:
         posts = Post.objects.all()
         for post in posts:
             post.liked = False
             post.followed = "follow"
             post.save()
-    
+
     post_detail = Post.objects.all().order_by('-created')
     # return render(request, "network/index.html",{
     #     "Post" : Post.objects.all().order_by('-created')
@@ -86,7 +86,7 @@ def edit(request,id):
         return render(request,"network/edit.html",{
             "post":post
         })
-    
+
 def like(request,id):
     user =  Like.objects.get(user=request.user)
     post = Post.objects.get(id=id)
@@ -99,9 +99,9 @@ def like(request,id):
         user.post.add(post)
         post.liked = True
     post.save()
-    
+
     return JsonResponse(post.serialize(),safe=False)
-    # return HttpResponseRedirect(reverse('index')) 
+    # return HttpResponseRedirect(reverse('index'))
 
 
 def follow(request,id):
@@ -115,7 +115,7 @@ def follow(request,id):
     elif userFollowing.following.filter(pk=post.user.id):
         userFollowing.following.remove(post.user)
         userfollower.follower.remove(request.user)
-        
+
     else:
         userFollowing.following.add(post.user)
         userfollower.follower.add(request.user)
@@ -131,28 +131,28 @@ def followingsPost(request):
         posting = posting.union(Post.objects.filter(user=user_following))
     data = posting
     posting = Post.objects.none()
-    
-    
+
+
     # return render(request, "network/index.html",{
     #     "Post":data
     # })
 
     return JsonResponse([post_deatil.serialize() for post_deatil in data],safe=False)
-    
+
 
 def userPost(request,id):
     user = User.objects.get(pk=id)
     posts = Post.objects.filter(user=user)
-    
+
     return JsonResponse([postByUser.serialize() for postByUser in posts],safe=False)
-    
+
     # return render(request, "network/user.html", {
     #     "userInfo":user,
     #     "userPost":posts,
     #     "followers":followers,
     #     "following":following
     # })
-    
+
 
 def followerOfUser(request,id):
     user = Follower.objects.get(user=id)
@@ -169,7 +169,7 @@ def postsLikedByUser(request,id):
     return JsonResponse([postliked.serialize()],safe=False)
 
 
-    
+
 def postview(request,id):
     post = Post.objects.get(id=id)
     commentOnPost = post.comment_post.all()
@@ -177,9 +177,10 @@ def postview(request,id):
         content = request.POST["content"]
         comment = PostComment.objects.create(user=request.user,content=content)
         comment.post.add(post)
-    
-    
-    # return JsonResponse([commented.serialize() for commented in commentOnPost],safe=False)
+
+    comments = [commented.serialize() for commented in commentOnPost]
+    commentedPost = [post.serialize()]
+    return JsonResponse([commentedPost, comments],safe=False)
 
     return render(request, "network/postview.html", {
         "commentOnPost": post.comment_post.all(),

@@ -6,13 +6,13 @@
         <title>{% block title %}Social Network{% endblock %}</title>
         <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> -->
         <link href="{% static 'network/styles.css' %}" rel="stylesheet">
-        
+
     </head>
     <body>
 
         <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" href="#">Network</a>
-          
+
             <div>
               <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
@@ -41,15 +41,15 @@
               </ul>
             </div>
           </nav> -->
-        
-        
 
 
-        
+
+
+
 
         <section class="ui">
             <section class="navigation">
-            
+
                 <section>
                     <h1>Network</h1>
                     <nav>
@@ -66,11 +66,11 @@
                     <button>Post</button>
                     {% endif %}
                 </section>
-            
+
                 <section class="nav-logout">
                     {% if user.is_authenticated %}
                     <section class="logout">
-            
+
                         <section class="user">
                             <section class="user-image"></section>
                             <article class="userinfo">
@@ -78,12 +78,12 @@
                                 <p class="user-name">{{ user.email }}</p>
                             </article>
                         </section>
-            
+
                         <section>
                             <a class="logout-menu" href="{% url 'logout' %}"><img src="{% static 'network/assets/sign-out-alt.svg' %}" alt=""></a>
                         </section>
-            
-                    </section>   
+
+                    </section>
                     {% else %}
                     <section class="logout">
                     <section>
@@ -95,16 +95,19 @@
                     </section>
                     {% endif %}
                 </section>
-            
+
             </section>
             {% block body %}
             {% endblock %}
             <section class="recommendation">
                 <section id="recommended-users">
                     <h1>New On Network</h1>
-            
+
                 </section>
             </section>
         </section>
+
+
+        <script src="{% static 'network/layout.js' %}"></script>
     </body>
 </html>

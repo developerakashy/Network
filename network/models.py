@@ -4,7 +4,7 @@ from django.db import models
 
 class User(AbstractUser):
     created = models.DateTimeField(auto_now_add=True)
-    
+
     def serialize(self):
         return {
             "userId":self.id,
@@ -45,21 +45,21 @@ class Like(models.Model):
         return {
             "user":self.user.username,
             "posts":[postliked.serialize() for postliked in self.post.all()],
-            
+
         }
 
 class Following(models.Model):
     user = models.OneToOneField(User,related_name="follower",on_delete=models.CASCADE)
     following = models.ManyToManyField(User,related_name="following",blank=True)
-    
+
     def serialize(self):
         return {
             "user":self.user.username,
             "following":[userFollowed.serialize() for userFollowed in self.following.all()]
-            
+
         }
-    
-    
+
+
 
 class Follower(models.Model):
     user = models.OneToOneField(User,related_name="userfollower",blank=True,on_delete=models.CASCADE)
@@ -79,12 +79,12 @@ class PostComment(models.Model):
 
     def serialize(self):
         return {
-            "userCommented":self.user.username,
+            "userCommented":self.user.serialize(),
             "content":self.content,
             "commentOnPost":[commentOnPost.id for commentOnPost in self.post.all()],
             "commentCreated":self.created
         }
-    
+
 
 class PostCommentLiked(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)

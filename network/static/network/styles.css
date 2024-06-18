@@ -1,17 +1,23 @@
+html{
+    /* scroll-behavior: smooth; */
+}
+
 .loader {
     position: relative;
     border: 1px solid rgb(0, 0, 0);
     top: 3%;
-    left: 46%;
-    height: 73.99vh;
-    
+    left: 48%;
+
+    height: 100vh;
+
 }
 
-.loader img{
-    height: 35px;
-    width: 35px;
-    animation: spin 1.5s linear infinite;
+
+#post-view-all,#post-view-following{
+    overflow: hidden;
+    min-height: 100vh;
 }
+
 
 @keyframes spin {
     0%{
@@ -22,13 +28,23 @@
     }
 }
 
+#loading{
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    border: 3.5px solid rgba(108, 169, 255, 0.315);
+    border-top: 3.5px solid rgb(108, 169, 255);
+    animation: spin 0.7s linear infinite;
+
+}
+
 #post-nav > nav{
     cursor: pointer;
 }
 
 button{
     font-family: plus;
-    
+
 }
 
 @font-face {
@@ -63,8 +79,8 @@ body{
     flex-direction: column;
     align-items: end;
     justify-content: space-between;
-    
-    
+
+
 }
 
 
@@ -153,7 +169,7 @@ body{
     margin-bottom: 3rem;
     padding: 0.6rem 0.8rem;
     background-color: rgba(31, 30, 30, 0.693);
-    
+
 }
 
 
@@ -196,7 +212,7 @@ body{
     font-size: 0.85rem;
     /* font-weight: lighter; */
     letter-spacing: 0.5px;
-    font-weight: 500;
+    font-weight: 4c00;
     margin: 1px;
     text-transform: lowercase;
 }
@@ -231,7 +247,7 @@ button{
     top: 0%;
     color: white;
     /* border: 1px solid; */
-    
+
     background-color: black;
     width: 33%;
 }
@@ -256,7 +272,7 @@ button{
     border: 1px solid rgb(47, 51, 54);
     /* justify-content: center; */
     align-items: center;
-    
+
 }
 
 
@@ -331,7 +347,7 @@ button{
     color: rgb(231, 233, 234);
     font-size: 15px;
     font-weight: 900;
-    background-color: inherit;
+    background-color: transparent;
     /* transition: color .2s ease-in-out; */
 }
 
@@ -401,16 +417,13 @@ button{
 }
 
 
-.post-visible,.post-visible-comment{
+.post-visible{
     border-bottom: 1px solid rgb(47, 51, 54);
     padding: 1.2rem 1.8rem 1rem 1.8rem;
     max-height: 1200px;
 }
 
-#post-view-all,#post-view-following{
-    overflow: hidden;
-    min-height: 77.2vh;
-}
+
 
 .post-visible{
     cursor: pointer;
@@ -447,7 +460,7 @@ button{
 .post-visible> div:nth-child(1),.post-visible-comment> div:nth-child(1){
     display: flex;
     justify-content: space-between;
-    
+
 }
 
 .post-user >section:nth-child(2){
@@ -470,7 +483,7 @@ button{
     color: rgb(231, 233, 234);
     padding: 0rem 1.5rem 0rem 0rem;
     margin-left: 3.5rem;
-    
+
 }
 
 .post-visible> div:nth-child(3){
@@ -552,7 +565,7 @@ svg{
 
 .following{
     background-color: inherit;
-    border: 1px solid rgb(149, 149, 149); 
+    border: 1px solid rgb(149, 149, 149);
     color: rgb(225, 225, 225);
     text-transform: capitalize;
     transition: background-color .2s ease;
@@ -572,72 +585,131 @@ svg{
 
 /* comment on post */
 
-.post-heading button{
-    height: 40px;
-    width: 40px;
+.post-heading svg{
+    height: 18px;
+    width: 18px;
     color: white;
     background-color: inherit;
     /* padding: 0.75rem 0.75rem;; */
     border: none;
-    border: 1px solid;
+    /* border: 2px solid; */
     border-radius: 50%;
-    margin-right: 1rem;
+}
+
+
+.post-heading button:hover svg{
+    background-color: rgb(108, 169, 255);
+
+}
+
+.post-heading button{
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    margin-right: 1.5rem;
+    margin-left: 0.5rem;
+
 }
 
 .post-heading{
+    position: sticky;
+    top: 0%;
     display: flex;
     align-items: center;
-    padding: 0rem 1.5rem;
+    justify-content: start;
     font-size: 1.4rem;
     letter-spacing: 1px;
+    padding: 0.75rem 0rem;
+    background-color: rgba(0, 0, 0, 0.293);
+    backdrop-filter: blur(5px);
+    z-index: 1;
+    /* border: 1px solid; */
 }
 
 .post-heading p{
-    margin: 1.2rem 0rem;
+    font-size: 1.25rem;
+    margin: 0%;
+    /* border: 1px solid; */
+    margin-bottom: 0.2rem ;
+    font-weight: 900;
 }
-.post-to-be-commented .post-visible{
-    padding: 1.5rem;
+.post-to-be-commented >.post-visible-comment{
+    margin: 1rem;
+    margin-top: 0.25rem;
+
 }
 
+.post-visible-comment .username{
+    font-size: 1.1rem;
+}
+
+.post-visible-comment .user-image{
+    height: 45px;
+    width: 45px;
+}
+
+.post-visible-comment .follow-btn{
+    margin-right: 2rem;
+}
+
+
 .post-to-be-commented div:nth-child(2){
-    margin: 0%;
+    margin-top: 0.5rem;
+    font-size: 1.1rem;
+    line-height: 25px;
+    letter-spacing: 0.5px;
+
 }
 
 .post-to-be-commented div:nth-child(3)>*{
-    font-size: 1.05rem;
+    font-size: 0.9rem;
 }
 
 .post-to-be-commented div:nth-child(3){
-    margin: 0%;
+    margin-top: 1rem;
 }
 
 .post-to-be-commented div:nth-child(4){
     display: flex;
-    justify-content: space-around;
-    border-top: 1px solid rgb(85, 85, 85);
-    border-bottom: 1px solid rgb(85, 85, 85);
+    /* justify-content: space-around; */
+    border-top: 1px solid rgb(47, 51, 54);
+    border-bottom: 1px solid rgb(47, 51, 54);
+
     margin: 1rem 0rem;
-    padding: 0.7rem 2rem;
+    padding: 0.1rem 0rem;
 
 }
 
+.post-to-be-commented div:nth-child(4) svg{
+    height: 20px;
+    width: 20px;
+    /* border: 1px solid; */
+}
+
 .post-to-be-commented div:nth-child(4)>button{
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     background-color: inherit;
+    display: flex;
+    align-items: center;
     border: none;
-    color: white;
+    color: rgb(113, 118, 123);
+    font-weight: 700;
 }
 
 .comment-textarea{
     margin: 0%;
-    padding: 0rem 1.5rem;
 }
 
 .comment-textarea form{
     display: flex;
     padding: 0;
-    align-items: end;
-    margin-bottom: 3rem;
+    align-items: center;
+    /* margin-bottom: 1rem; */
+    padding: 0.75rem 1rem;
+    padding-bottom: 1.5rem;
+
 }
 
 #comment-text-content{
@@ -648,7 +720,9 @@ svg{
     background-color: inherit;
     outline: none;
     border: none;
-    border-bottom: 2.5px solid rgb(85, 85, 85);
+    padding-top:0.7rem ;
+    line-height: 12px;
+    /* border-bottom: 2.5px solid rgb(47, 51, 54); */
 }
 
 .comment-textarea button{
@@ -665,7 +739,25 @@ svg{
 
 }
 
-.comment-view .post-visible-comment{
-    padding: 1.5rem;
+.comment-view .post-visible div:nth-child(2){
+    /* padding: 1rem; */
+    font-size: 1rem;
+    white-space: wrap;
 }
 
+.comment-like svg{
+    height: 20px;
+    width:20px;
+    /* border:1px solid; */
+}
+
+
+.comment-like{
+    font-size: 1rem;
+    font-weight: 900;
+    background-color: inherit;
+    border: none;
+    color: rgb(113, 118, 123);
+    display: flex;
+    align-items: center;
+}
