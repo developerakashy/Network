@@ -10,52 +10,48 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import *
 
 
-
 def posts(request):
     try:
-        currentUser = User.objects.get(id=request.user.id)
-        posts = Post.objects.all()
-        user = Like.objects.get(user=request.user)
-        follower = Following.objects.get(user=request.user)
-
-        for post in posts:
-
-            if user.post.filter(pk=post.id):
-                post.liked = True
-            else:
-                post.liked = False
-
-            # post.like_count = post.postLiked.all().count()
-            post.save()
-
-        for post in posts:
-            if post.user == currentUser:
-                post.followed = "You"
-            elif follower.following.filter(pk=post.user.id):
-                post.followed = "following"
-            else:
-                post.followed = "follow"
-            post.save()
+        post_detail = Post.objects.all().order_by('-created')
+        currentUserId = request.user.id
 
     except:
-        posts = Post.objects.all()
-        for post in posts:
-            post.liked = False
-            post.followed = "follow"
-            post.save()
+        post_detail = Post.objects.all().order_by('-created')
 
-    post_detail = Post.objects.all().order_by('-created')
-    # return render(request, "network/index.html",{
-    #     "Post" : Post.objects.all().order_by('-created')
-    # })
 
-    return JsonResponse([post_view.serialize() for post_view in post_detail],safe=False)
+    return JsonResponse([transform(currentUserId, post_view.serialize()) for post_view in post_detail],safe=False)
 
 
 def index(request):
     return render(request, "network/index.html",{
         "Post" : Post.objects.all().order_by('-created')
     })
+
+
+def transform(currentUserId,data):
+        try:
+            user = User.objects.get(id=currentUserId)
+            post = Post.objects.get(pk=data["id"])
+            currentUserFollowing = [userF.user.id for userF in user.followers.all()]
+            postLikedByUser = [userLiked.user.id for userLiked in post.postLiked.all()]
+        except:
+            currentUserFollowing = []
+            postLikedByUser = []
+
+
+        if currentUserId in postLikedByUser:
+            data["liked"] = True
+        else:
+            data["liked"] = False
+
+        if data["user"]["userId"] == currentUserId:
+            data["followed"] = "You"
+        elif data["user"]["userId"] in currentUserFollowing:
+            data["followed"] = "following"
+        else:
+            data["followed"] = "follow"
+
+        return data
 
 @login_required
 @csrf_exempt
@@ -93,15 +89,13 @@ def like(request,id):
 
     if user.post.filter(pk=post.id):
         user.post.remove(post)
-        post.liked = False
 
     else:
         user.post.add(post)
-        post.liked = True
     post.save()
 
-    return JsonResponse(post.serialize(),safe=False)
-    # return HttpResponseRedirect(reverse('index'))
+    currentUserId = request.user.id
+    return JsonResponse(transform(currentUserId,post.serialize()),safe=False)
 
 
 def follow(request,id):
@@ -119,6 +113,8 @@ def follow(request,id):
     else:
         userFollowing.following.add(post.user)
         userfollower.follower.add(request.user)
+
+
     return JsonResponse({"message":"successfull"},status=200)
 
 
@@ -126,18 +122,15 @@ def followingsPost(request):
     user = Following.objects.get(user=request.user)
     followin = user.following.all()
     posting = Post.objects.none()
-    posts(request)
+
     for user_following in followin:
         posting = posting.union(Post.objects.filter(user=user_following))
     data = posting
     posting = Post.objects.none()
+    currentUserId = request.user.id
 
 
-    # return render(request, "network/index.html",{
-    #     "Post":data
-    # })
-
-    return JsonResponse([post_deatil.serialize() for post_deatil in data],safe=False)
+    return JsonResponse([transform(currentUserId,post_deatil.serialize()) for post_deatil in data],safe=False)
 
 
 def userPost(request,id):
@@ -145,13 +138,6 @@ def userPost(request,id):
     posts = Post.objects.filter(user=user)
 
     return JsonResponse([postByUser.serialize() for postByUser in posts],safe=False)
-
-    # return render(request, "network/user.html", {
-    #     "userInfo":user,
-    #     "userPost":posts,
-    #     "followers":followers,
-    #     "following":following
-    # })
 
 
 def followerOfUser(request,id):
@@ -179,7 +165,8 @@ def postview(request,id):
         comment.post.add(post)
 
     comments = [commented.serialize() for commented in commentOnPost]
-    commentedPost = [post.serialize()]
+    currentUserId = request.user.id
+    commentedPost = [transform(currentUserId,post.serialize())]
     return JsonResponse([commentedPost, comments],safe=False)
 
     return render(request, "network/postview.html", {

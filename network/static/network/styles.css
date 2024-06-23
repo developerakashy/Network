@@ -7,14 +7,13 @@ html{
     border: 1px solid rgb(0, 0, 0);
     top: 3%;
     left: 48%;
-
     height: 100vh;
 
 }
 
 
 #post-view-all,#post-view-following{
-    overflow: hidden;
+    overflow-y: hidden;
     min-height: 100vh;
 }
 
@@ -642,7 +641,7 @@ svg{
 }
 
 .post-visible-comment .username{
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 .post-visible-comment .user-image{
@@ -650,14 +649,12 @@ svg{
     width: 45px;
 }
 
-.post-visible-comment .follow-btn{
-    margin-right: 2rem;
-}
 
 
 .post-to-be-commented div:nth-child(2){
+    white-space: pre-wrap;
     margin-top: 0.5rem;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     line-height: 25px;
     letter-spacing: 0.5px;
 
@@ -668,7 +665,7 @@ svg{
 }
 
 .post-to-be-commented div:nth-child(3){
-    margin-top: 1rem;
+    margin-top: 0.5rem;
 }
 
 .post-to-be-commented div:nth-child(4){
@@ -677,7 +674,7 @@ svg{
     border-top: 1px solid rgb(47, 51, 54);
     border-bottom: 1px solid rgb(47, 51, 54);
 
-    margin: 1rem 0rem;
+    margin: 0.5rem 0rem;
     padding: 0.1rem 0rem;
 
 }
@@ -690,11 +687,6 @@ svg{
 
 .post-to-be-commented div:nth-child(4)>button{
     font-size: 0.9rem;
-    background-color: inherit;
-    display: flex;
-    align-items: center;
-    border: none;
-    color: rgb(113, 118, 123);
     font-weight: 700;
 }
 
@@ -760,4 +752,14 @@ svg{
     color: rgb(113, 118, 123);
     display: flex;
     align-items: center;
+}
+
+
+.error{
+    color:red;
+    text-align:center;
+    margin-top:2rem;
+    font-size:1rem;
+    font-weight:600;
+    letter-spacing:0.5px
 }

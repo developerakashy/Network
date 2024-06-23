@@ -20,20 +20,16 @@ class Post(models.Model):
     content = models.TextField(max_length=250)
     created = models.DateTimeField(auto_now_add=True)
     edited = models.BooleanField(default=False)
-    liked = models.BooleanField(default=False)
-    # like_count = models.IntegerField(default=0,blank=True)
-    followed = models.TextField(max_length=250)
 
     def serialize(self):
+
         return {
             "id":self.id,
             "user":self.user.serialize(),
             "content":self.content,
             "edited":self.edited,
-            "liked":self.liked,
             "like_count":self.postLiked.all().count(),
             "comment_count":self.comment_post.all().count(),
-            "followed":self.followed,
             "created":self.created
         }
 

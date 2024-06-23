@@ -1,215 +1,221 @@
-document.addEventListener("DOMContentLoaded",()=>{
-    let createPost = document.querySelector("#create-posts")
-    let content = document.querySelector("#post-textarea")
-    let posts = document.querySelector("#post-nav1")
-    let followingPosts = document.querySelector("#post-nav2")
-    let slider = document.querySelector(".slider")
-    let text = document.querySelector("#post-textarea")
-    let post_comment = document.querySelector("#post-comment-view")
-    let home = document.querySelector("#content-home")
-    let postViewAll  = document.querySelector("#post-view-all")
-    let postViewFollowing  = document.querySelector("#post-view-following")
-    let loader  = document.querySelector(".loader")
-    let postViewBack  = document.querySelector(".postview-back")
-    let lastClickedButton;
-    let isLoading = false
-    let isLoadingFollowing = false
-    lastClickedButton = "posts"
+// document.addEventListener("DOMContentLoaded",()=>{
+import { getComment } from "./postview.js"
+let createPost = document.querySelector("#create-posts")
+let content = document.querySelector("#post-textarea")
+let posts = document.querySelector("#post-nav1")
+let followingPosts = document.querySelector("#post-nav2")
+let slider = document.querySelector(".slider")
+let text = document.querySelector("#post-textarea")
+let post_comment = document.querySelector("#post-comment-view")
+let home = document.querySelector("#content-home")
+let postViewAll  = document.querySelector("#post-view-all")
+let postViewFollowing  = document.querySelector("#post-view-following")
+let loader  = document.querySelector(".loader")
 
-    window.addEventListener('popstate', (event)=>{
-        console.log(event.state)
-        // if(event.state === null){
-        //     console.log("performed")
-        //     history.back()
-        // }
-        // if(lastClickedButton != "posts"){
-        //     loadAllPosts(event.state)
-        // }
-        // else{
-        //     loadFollowingPosts(event.state)
-        // }
-    })
+let homeNavigation = document.querySelector("#home")
+
+let lastClickedButton;
+let firstLoad = false
+let isLoading = false
+let isLoadingFollowing = false
+lastClickedButton = "posts"
+
+window.addEventListener('popstate', (event)=>{
+    console.log(event.state)
+    showContent(event.state.div, event.state.postViewHeight)
+
+})
 
 
-
-    post_comment.style.display = "none"
-
-
-
-    let screenHeights = {}
-
-    function showContent(div){
-        let allContentPage = document.querySelectorAll(".content")
-        allContentPage.forEach(page => {
-            if(page.style.display === "block"){
-                console.log(screenHeights)
-                screenHeights[page.id] = window.scrollY
-                console.log(page.id, window.scrollY)
-                console.log(screenHeights)
-                }
-
-            page.style.display = "none"
-        })
-
-        screenHeights["post-comment-view"] = 0
-
-        div.style.display = "block"
-        window.scroll(0, screenHeights[div.id])
-
-    }
-
-    let navContent = {}
-    function showNavContent(div){
-        let nav = document.querySelectorAll(".nav")
-        nav.forEach(element => {
-            if(element.style.display === "block"){
-                navContent[div.id] = window.scrollY
-            }
-
-            element.style.display = "none"
-        })
-
-        div.style.display = "block"
-
-    }
+homeNavigation.addEventListener('click', ()=>{
+    showContent(home.id, screenHeights["content-home"])
+})
 
 
+post_comment.style.display = "none"
 
-
-    // showContent(home)
-
-
-    async function getFollowingPosts(){
-        let response = await fetch(`./followingsPost`)
-        return await response.json()
-    }
-
-    async function getAllPosts(){
-        let response = await fetch(`./posts`)
-        return await response.json()
-    }
-
-
-async function initialState(){
-    let objectRetreived = await getAllPosts()
-    history.replaceState({result:objectRetreived, section:"initial"}, "")
-    loadAllPosts(objectRetreived)
+let screenHeights = {
+    'content-home': 0,
+    'post-comment-view': 0
 }
 
-initialState()
+function showContent(div, scrolling){
+    let allContentPage = document.querySelectorAll(".content")
+    let element = document.getElementById(div)
 
-posts.addEventListener("click", async ()=>{
-        lastClickedButton = "posts"
-        globalThis.scrollTo({top:0,behavior:"smooth"})
-        posts.firstChild.style.color = "inherit"
-        followingPosts.firstChild.style.color = "rgb(113, 118, 123)"
-        slider.style.left = "16.27%"
+    allContentPage.forEach(page => {
+        if(page.style.display === "block"){
+            screenHeights[page.id] = window.scrollY
+            if(page.id === 'content-home'){
+                history.replaceState({div:home.id,postViewHeight: screenHeights['content-home'], section:"initial"}, "")
+
+            }
 
 
-        if(isLoading){
-            return
         }
-
-
-        loader.style.display = "block"
-        postViewAll.innerHTML = ""
-        postViewFollowing.style.display = "none"
-        postViewAll.style.display = "none"
-
-        isLoading = true
-
-        let result = await getAllPosts()
-        window.history.pushState({result:result, section:"Posts"}, "")
-        console.log("statePushed - AllPosts")
-        loadAllPosts(result)
-
-
+        page.style.display = "none"
     })
 
+    element.style.display = "block"
+    if(scrolling >= 0){
+        console.log("scrolled: ", scrolling)
+        window.scroll(0, scrolling)
+    }
+    else if(element.id === 'post-comment-view'){
+        window.scroll(0, 0)
+    }
 
 
+}
 
+let navContent = {}
+
+function showNavContent(div){
+    let nav = document.querySelectorAll(".nav")
+    let element = document.getElementById(div)
+
+    nav.forEach(contentView => {
+
+        if(contentView.style.display === "block"){
+            navContent[contentView.id] = window.scrollY
+
+        }
+        contentView.style.display = "none"
+    })
+
+    element.style.display = "block"
+    window.scroll(0, navContent[div])
+}
+
+
+async function getFollowingPosts(){
+    let response = await fetch(`./followingsPost`)
+    return await response.json()
+}
+
+async function getAllPosts(){
+    let response = await fetch(`./posts`)
+    return await response.json()
+}
+
+
+function allPostSlider(){
+    posts.firstChild.style.color = "inherit"
+    followingPosts.firstChild.style.color = "rgb(113, 118, 123)"
+    slider.style.left = "16.27%"
+}
+
+function follwingPostSlider(){
+    followingPosts.firstChild.style.color = "inherit"
+    posts.firstChild.style.color = "rgb(113, 118, 123)"
+    slider.style.left = "66.28%"
+}
+
+
+posts.addEventListener("click", async ()=>{
+    if(lastClickedButton !== 'posts'){
+        allPostSlider()
+        lastClickedButton = "posts"
+        showNavContent(postViewAll.id)
+        return
+    }
+
+
+    lastClickedButton = "posts"
+    allPostSlider()
+
+
+    if(isLoading){
+        return
+    }
+
+    isLoading = true
+
+    loader.style.display = "block"
+    postViewAll.innerHTML = ""
+    postViewFollowing.style.display = "none"
+    postViewAll.style.display = "none"
+
+
+    let result = await getAllPosts()
+    loadAllPosts(result)
+
+})
 
 
 followingPosts.addEventListener("click", async ()=>{
+    if(lastClickedButton !== 'followingPosts' && firstLoad){
+        follwingPostSlider()
         lastClickedButton = "followingPosts";
-        globalThis.scrollTo({top:0,behavior:"smooth"})
-        followingPosts.firstChild.style.color = "inherit"
-        posts.firstChild.style.color = "rgb(113, 118, 123)"
-        slider.style.left = "66.28%"
-
-
-        if(isLoadingFollowing){
-            return
-        }
-
-
-        loader.style.display = "block"
-        postViewFollowing.innerHTML = ""
-        postViewFollowing.style.display = "none"
-        postViewAll.style.display = "none"
-        isLoadingFollowing = true
-
-        let result = await getFollowingPosts()
-        window.history.pushState({result:result, section:"following"} , "")
-        console.log('statePushed - following')
-        loadFollowingPosts(result)
-    })
-
-    globalThis.scrollTo({top:0,behavior:"smooth"})
-    followingPosts.firstChild.style.color = "rgb(113, 118, 123)"
-
-
-
-
-createPost.onsubmit = ()=>{
-        addPost(content)
-        return false
+        showNavContent(postViewFollowing.id)
+        return
     }
 
+    if(!firstLoad){
+        navContent['post-view-all'] = window.scrollY
+
+    }
+
+
+    firstLoad = true
+    lastClickedButton = "followingPosts";
+    follwingPostSlider()
+
+
+    if(isLoadingFollowing){
+        return
+    }
+
+
+    loader.style.display = "block"
+    postViewFollowing.innerHTML = ""
+    postViewFollowing.style.display = "none"
+    postViewAll.style.display = "none"
+    isLoadingFollowing = true
+
+    let result = await getFollowingPosts()
+    loadFollowingPosts(result)
+
+})
+
+globalThis.scrollTo({top:0,behavior:"smooth"})
+followingPosts.firstChild.style.color = "rgb(113, 118, 123)"
+
+createPost.addEventListener("submit", ()=>{
+        addPost(content)
+        return false
+})
 
 text.addEventListener("input",()=>{
         increasingTextareaHeight()
 
-    })
-
-postViewBack.addEventListener('click', ()=>{
-    showContent(home)
-    if(lastClickedButton === "posts"){
-        history.pushState({div:home.id, section:"Home-AllPosts"}, "")
-        console.log("Home-post pushed")
-    }else{
-        history.pushState({div:home.id, section:"Home-Following"}, "")
-        console.log("Home-following Pushed")
-    }
+})
 
 
-    })
 
-    increasingTextareaHeight();
+increasingTextareaHeight();
+history.scrollRestoration = 'manual'
+posts.click()
+showContent(home.id)
 
 
 function loadAllPosts(resultAllPost){
     lastClickedButton = "posts"
+    allPostSlider()
     globalThis.scrollTo({top:0,behavior:"smooth"})
-    posts.firstChild.style.color = "inherit"
-    followingPosts.firstChild.style.color = "rgb(113, 118, 123)"
-    slider.style.left = "16.27%"
     showPosts(resultAllPost);
 }
 
 function loadFollowingPosts(result){
     lastClickedButton = "followingPosts";
+    follwingPostSlider()
     globalThis.scrollTo({top:0,behavior:"smooth"})
-    followingPosts.firstChild.style.color = "inherit"
-    posts.firstChild.style.color = "rgb(113, 118, 123)"
-    slider.style.left = "66.28%"
     postFollowing(result);
 }
 
 
-function postInteraction(){
-    let postVisible = document.querySelectorAll(".post-visible")
+function postInteraction(div){
+    let postVisible = document.querySelectorAll(`.${div}`)
 
     postVisible.forEach(post => {
 
@@ -226,17 +232,24 @@ function postInteraction(){
                 follow(event.target)
 
             }
+
             else{
-                showContent(post_comment)
-                history.pushState({div:post_comment.id, section:"PostView"}, "")
+                if(div === 'post-visible-comment'){
+                    return
+                }
+                let postID = event.target.parentElement.classList[2]
+
+                showContent(post_comment.id)
+                console.log()
+                getComment(postID)
+                console.log(screenHeights)
+                history.pushState({div:post_comment.id,postViewHeight: screenHeights["post-comment-view"], section:event.target.id}, "")
                 console.log("commentView Pushed")
-                // postViewFollowing.parentElement.style.display = "none"
             }
-
-
         })
     })
 }
+
 
 function increasingTextareaHeight(){
     let text = document.querySelector("#post-textarea")
@@ -250,7 +263,7 @@ function showPosts(allPost){
     allPost.forEach(element => {
 
         postViewAll.innerHTML += `
-        <section class="post-visible ${element.id}">
+        <section class="post-visible all-post ${element.id}">
 
         <div>
         <section class="post-user">
@@ -271,7 +284,7 @@ function showPosts(allPost){
         <div>${element.content}</div>
 
         <div>
-        <button class="like-btn ${element.id} ${element.liked ? "liked" : "not-liked"}">
+        <button class="like-btn like-btn-${element.id} ${element.liked ? "liked" : "not-liked"}">
         ${element.liked ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
         <path fill="none" d="M0 0h24v24H0z"/>
         <path d="M12 21.35l-.874-.835C5.798 16.182 2 12.015 2 8.5 2 5.42 4.42 3 7.5 3 9.642 3 11.486 4.592 12 6.25 12.514 4.591 14.358 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.515-3.798 7.682-8.126 12.015L12 21.35z" fill="rgb(249, 24, 128)" stroke-width="2"/>
@@ -290,30 +303,34 @@ function showPosts(allPost){
 
         </section>`
 
-        });
-
-        setTimeout(()=>{
+    });
 
 
-            isLoading = false
-            if(lastClickedButton === "posts"){
-                postViewFollowing.style.display = "none"
-                postViewAll.style.display = "block"
-                loader.style.display = "none"
-                postInteraction()
-            }
-        },500)
+    setTimeout(()=>{
+        isLoading = false
+        if(lastClickedButton === "posts"){
+            postViewFollowing.style.display = "none"
+            postViewAll.style.display = "block"
+            loader.style.display = "none"
+            postInteraction("all-post")
+        }
+    },500)
 
 }
 
 
 function postFollowing(post){
 
+    if(post.length <= 0){
+        console.log("No Following")
+        postViewFollowing.innerHTML = `<p class="error">Please follow some user's to see there post Here</p>`
+    }
+
     post.reverse()
 
     post.forEach(element => {
         postViewFollowing.innerHTML += `
-            <section class="post-visible ${element.id}">
+            <section class="post-visible post-following ${element.id}">
 
             <div>
             <section class="post-user">
@@ -333,7 +350,7 @@ function postFollowing(post){
             <div>${element.content}</div>
 
             <div>
-            <button class="like-btn ${element.id} ${element.liked ? "liked" : "not-liked"}">
+            <button class="like-btn like-btn-${element.id} ${element.liked ? "liked" : "not-liked"}">
             ${element.liked ? `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
             <path fill="none" d="M0 0h24v24H0z"/>
             <path d="M12 21.35l-.874-.835C5.798 16.182 2 12.015 2 8.5 2 5.42 4.42 3 7.5 3 9.642 3 11.486 4.592 12 6.25 12.514 4.591 14.358 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.515-3.798 7.682-8.126 12.015L12 21.35z" fill="rgb(249, 24, 128)" stroke-width="2"/>
@@ -354,22 +371,19 @@ function postFollowing(post){
 
     });
 
+
+
     setTimeout(()=>{
-
-
         isLoadingFollowing = false
         if(lastClickedButton === "followingPosts"){
             postViewAll.style.display = "none"
             postViewFollowing.style.display = "block"
             loader.style.display = "none"
-            postInteraction()
+            postInteraction("post-following")
         }
     },500)
 
-
-
 }
-
 
 
 function addPost(content){
@@ -396,17 +410,16 @@ function addPost(content){
 
 
 function showTime(date){
-    date = date.split(".")
-    createdDate = new Date(date[0])
+    let createdDate = new Date(date)
     let dateNow = new Date()
 
     let differ = dateNow - createdDate
-    seconds = Math.floor(differ/1000)
-    minutes = Math.floor(seconds/60)
-    hours = Math.floor(minutes/60)
-    days = Math.floor(hours/24)
-    months = Math.floor(days/30)
-    years = Math.floor(months/12)
+    let seconds = Math.floor(differ/1000)
+    let minutes = Math.floor(seconds/60)
+    let hours = Math.floor(minutes/60)
+    let days = Math.floor(hours/24)
+    let months = Math.floor(days/30)
+    let years = Math.floor(months/12)
 
     if(years > 0){
         if(years === 1)
@@ -442,17 +455,29 @@ function showTime(date){
 
 }
 
+function addRemoveFollowing(btn){
+    if(btn.classList.contains("following")){
+        btn.classList.add("follow")
+        btn.classList.remove("following")
+        btn.textContent = "follow"
+
+    }
+    else{
+        btn.classList.remove("follow")
+        btn.classList.add("following")
+        btn.textContent = "following"
+    }
+
+}
 
 
 function follow(element){
 
     let allFollowBtn = document.querySelectorAll(".all")
-    let followingFollowBtn = document.querySelectorAll(".Following")
 
     let post = element.className.split(" ")[1]
     let view = element.className.split(" ")[2]
-    let user = element.className.split(" ")[3]
-    let relation_with_user = user
+    let relation_with_user = element.className.split(" ")[3]
 
         fetch(`/follow/${post}`)
         .then(response => response.json())
@@ -462,51 +487,31 @@ function follow(element){
                     element.textContent = "Edit"
                     element.classList.add("following")
                 }
-                else if(view === "Following"){
-                    // element.classList.remove('Following')
-                    followingFollowBtn.forEach(btn => {
-                        let user = btn.className.split(" ")[3]
-                        if(user === relation_with_user){
-                            console.log(btn.parentElement.parentElement.parentElement)
-
-                            btn.parentElement.parentElement.parentElement.style.animationPlayState = "running"
-
-                            btn.parentElement.parentElement.parentElement.addEventListener('animationend',()=> {
-
-                                btn.parentElement.parentElement.parentElement.remove()
-
-                            })
-
-                        }
-
-                    })
-
-                }
                 else{
+
                     allFollowBtn.forEach(btn => {
                         let user = btn.className.split(" ")[3]
                         if(user === relation_with_user){
-
-                            if(btn.classList.contains("following")){
-                                btn.classList.add("follow")
-                                btn.classList.remove("following")
-                                btn.textContent = "follow"
-
-                            }
-                            else{
-                                btn.classList.remove("follow")
-                                btn.classList.add("following")
-                                btn.textContent = "following"
-
-                            }
+                            addRemoveFollowing(btn)
                         }
                     })
+
+
+                    if(lastClickedButton === "followingPosts"){
+                        followingPosts.click()
+                    }
+                    else{
+                        firstLoad = false
+                    }
+
                 }
 
-            })
+
+
+        })
         .catch(error => {
                 console.log(error)
-            })
+        })
 
 
 }
@@ -517,28 +522,35 @@ function follow(element){
 
 function likeThePost(element){
     let id = element.className.split(" ")[1]
+    let allLikeButton = document.querySelectorAll(`.${id}`)
 
-        fetch(`/like/${id}`)
+        fetch(`/like/${id.split("-")[2]}`)
         .then(response => response.json())
         .then(post => {
                 if(post.liked){
-                    element.classList.add("liked")
-                    element.classList.remove("not-liked")
+                    allLikeButton.forEach(item => {
+                        item.classList.add("liked")
+                        item.classList.remove("not-liked")
+                    })
                 }
                 else{
-                    element.classList.add("not-liked")
-                    element.classList.remove("liked")
+                    allLikeButton.forEach(item => {
+                        item.classList.add("not-liked")
+                        item.classList.remove("liked")
+                    })
                 }
 
-                // element.classList.add(`${post.liked ? "liked" : "not-liked"}`)
-                element.innerHTML = `${post.liked?`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
-                <path fill="none" d="M0 0h24v24H0z"/>
-                <path d="M12 21.35l-.874-.835C5.798 16.182 2 12.015 2 8.5 2 5.42 4.42 3 7.5 3 9.642 3 11.486 4.592 12 6.25 12.514 4.591 14.358 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.515-3.798 7.682-8.126 12.015L12 21.35z" fill="rgb(249, 24, 128)"/>
-              </svg>`:`<svg class="svg-not-liked" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
-              <path fill="none" d="M0 0h24v24H0z"/>
-              <path d="M12 21.35l-.874-.835C5.798 16.182 2 12.015 2 8.5 2 5.42 4.42 3 7.5 3 9.642 3 11.486 4.592 12 6.25 12.514 4.591 14.358 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.515-3.798 7.682-8.126 12.015L12 21.35z" stroke="rgb(85,85,85)" stroke-width="2"/>
-            </svg>`}
-               ${post.like_count > 1 ? post.like_count+" Likes":post.like_count+" Like"} `
+                allLikeButton.forEach(item => {
+
+                    item.innerHTML = `${post.liked?`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="none" d="M0 0h24v24H0z"/>
+                        <path d="M12 21.35l-.874-.835C5.798 16.182 2 12.015 2 8.5 2 5.42 4.42 3 7.5 3 9.642 3 11.486 4.592 12 6.25 12.514 4.591 14.358 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.515-3.798 7.682-8.126 12.015L12 21.35z" fill="rgb(249, 24, 128)"/>
+                        </svg>`:`<svg class="svg-not-liked" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="none" d="M0 0h24v24H0z"/>
+                        <path d="M12 21.35l-.874-.835C5.798 16.182 2 12.015 2 8.5 2 5.42 4.42 3 7.5 3 9.642 3 11.486 4.592 12 6.25 12.514 4.591 14.358 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.515-3.798 7.682-8.126 12.015L12 21.35z" stroke="rgb(85,85,85)" stroke-width="2"/>
+                        </svg>`}
+                        ${post.like_count > 1 ? post.like_count+" Likes":post.like_count+" Like"} `
+                })
 
             })
         .catch(error => {
@@ -547,4 +559,8 @@ function likeThePost(element){
 
 }
 
-})
+export {
+    showTime, screenHeights, postInteraction
+}
+
+// })
