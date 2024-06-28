@@ -107,7 +107,7 @@ function commentLoad(data){
     let comments = document.querySelector(".comment-view")
 
     data.reverse()
-    
+
 
     data.forEach(element => {
 
